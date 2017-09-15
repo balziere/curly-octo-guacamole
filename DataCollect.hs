@@ -1,10 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Data
+module DataCollect
 (
-
-
+TelegramPost(..),
+getJSON,
+decodeList,
+printJSON
 
 ) where
+
 import Data.Aeson
 import Data.Text
 import qualified Data.ByteString.Lazy as B
