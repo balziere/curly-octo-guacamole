@@ -1,8 +1,15 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 import Data.Either.Combinators
-import Graphics.EasyPlot (plot, PDF, Graph2D(Data2D), TerminalType(PDF))
+import Graphics.EasyPlot (plot,
+                        Graph2D(Data2D),
+                        TerminalType(PDF),
+                        Option(..),
+                        Style(..),
+                        Option2D(..))
 import DataCollect
 import qualified Data.Set as S
-import Data.Text (Text(..))
+import Data.Text (Text(..), unpack)
 import Data.Either (rights)
 import qualified Data.Time as Time
 import qualified Data.Time.LocalTime as Local
@@ -53,8 +60,8 @@ dateHistos t = map (\o ->
 
 
 plotHisto :: (Text,[Int]) -> IO Bool
-plotHisto (name, xs) = plot (PDF (username ++ ".pdf")) $
-            Data2D [Title username] [] $ zip [1..] xs
+plotHisto (name, xs) = plot (PDF ("./plots/" ++(unpack name) ++ ".pdf")) $
+            Data2D [Title $ unpack name, Style Impulses] [Range 0.5 7.5, Step 0.1] $ zip [1..] xs
 
 
 plotData :: IO ()
@@ -62,7 +69,7 @@ plotData= do
     let jsonFile = "Autistengaleere.jsonl" :: FilePath
     f <- getJSON jsonFile
     --print . dateHistos . rights . decodeList $ f
-    let histos = dateHistos .rights .decodeLis $ f
-    map plotHisto histos
+    let histos = dateHistos .rights .decodeList $ f
+    mapM_ plotHisto histos
 
 
